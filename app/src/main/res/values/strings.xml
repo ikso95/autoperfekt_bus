@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">autoperfekt_bus</string>
+    <string name="dialog_message">Przed jazdą zawsze pamiętaj o sprawdzeniu oleju oraz płynów!</string>
+    <string name="dialog_title">Uwaga!</string>
+    <string name="ok">OK</string>
+    <string name="reminder">Pamiętaj o sprawdzeniu stanu oleju oraz płynów przed jazdą!</string>
+    <string name="sprawdzone">Sprawdzone</string>
+    <string name="podaj_haslo">Aby korzystać z aplikacji podaj hasło dostępu:</string>
+    <string name="haslo">Hasło</string>
+
 </resources>
