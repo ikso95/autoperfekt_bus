@@ -56,7 +56,9 @@
         android:layout_height="350dp"
         android:layout_below="@+id/layout"
         android:orientation="horizontal"
-        android:visibility="gone" />
+        android:visibility="gone"
+
+        />
 
 
 </RelativeLayout>

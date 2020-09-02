@@ -93,7 +93,7 @@ public class DescriptionStep extends Step<String> {
         // However, we return "(Empty)" if the text is empty to avoid not having any text to display.
         // This string will be displayed in the subtitle of the step whenever the step gets closed.
         String userName = getStepData();
-        return !userName.isEmpty() ? userName : "(Empty)";
+        return !userName.isEmpty() ? userName : "Brak";
     }
 
     @Override

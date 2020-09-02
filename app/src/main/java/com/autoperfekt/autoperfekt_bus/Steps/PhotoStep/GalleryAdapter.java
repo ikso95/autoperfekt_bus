@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.media.ThumbnailUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,6 +46,9 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
 
+        //final int THUMBSIZE = 64;
+        //Bitmap myBitmap = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(storageFilesPathsList.get(position)),THUMBSIZE, THUMBSIZE);
+        Log.d("photos", "onBindViewHolder: " + storageFilesPathsList.get(position));
         Bitmap myBitmap = BitmapFactory.decodeFile(storageFilesPathsList.get(position));
 
         Matrix matrix = new Matrix();           //obrocenie zdjecia o 90 stopni

@@ -159,6 +159,12 @@ public class PhotoStep extends Step<String> {
         else
         {
             recyclerView.setVisibility(View.VISIBLE);
+
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setItemViewCacheSize(20);
+            recyclerView.setDrawingCacheEnabled(true);
+            recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+
             galleryAdapter = new GalleryAdapter(storageFilesPathsList, getContext(),PhotoStep.this);
             recyclerView.setAdapter(galleryAdapter);
             Log.d("photosSize", String.valueOf(storageFilesPathsList.size()));
@@ -203,7 +209,8 @@ public class PhotoStep extends Step<String> {
     @Override
     public String getStepData() {
         // We get the step's data from the value that the user has typed in the EditText view.
-        return "";
+        return String.valueOf(storageFilesPathsList.size());
+        //return "";
     }
 
     @Override
@@ -211,8 +218,8 @@ public class PhotoStep extends Step<String> {
         // Because the step's data is already a human-readable string, we don't need to convert it.
         // However, we return "(Empty)" if the text is empty to avoid not having any text to display.
         // This string will be displayed in the subtitle of the step whenever the step gets closed.
-        String userName = getStepData();
-        return !userName.isEmpty() ? userName : "";
+        String numbersOfPhotos = getStepData();
+        return !numbersOfPhotos.isEmpty() ? "Liczba zdjęć: " + numbersOfPhotos  : "Brak zdjęć";
     }
 
     @Override
