@@ -10,5 +10,6 @@
     <string name="nieobowiazkowy">* Ten punkt jest nieobowiązkowy</string>
     <string name="uwagi">Dodatkowe uwagi</string>
     <string name="zrob_zdjecia_busa">Przed wyjazdem zrób zdjęcia busa z zewnątrz</string>
+    <string name="Email_title">"Nowy raport z aplikacji dla busa: "</string>
 
 </resources>

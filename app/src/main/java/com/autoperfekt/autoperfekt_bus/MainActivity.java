@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.autoperfekt.autoperfekt_bus.Email.GMailSender;
 import com.autoperfekt.autoperfekt_bus.Steps.BusNumberStep;
 import com.autoperfekt.autoperfekt_bus.Steps.CounterEndStep;
 import com.autoperfekt.autoperfekt_bus.Steps.CounterStartStep;
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
     private MaterialDialog mDialog;
 
     private boolean isAttachment = false;
-    private List<String> storageFilesPathsList;
+    private List<String> storageFilesPathsList; //zdjecia bus
     private boolean doubleBackToExitPressedOnce = false;
     private PickiT pickiT;
 
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
         counterEndStep = new CounterEndStep("Licznik - powrót");
         descriptionStep = new DescriptionStep("Uwagi");
         photoStep = new PhotoStep("Zdjęcia busa", MainActivity.this, busNumberStep);
+
 
         verticalStepperForm = findViewById(R.id.stepper_form);
 
@@ -110,7 +112,6 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
 
         super.onActivityResult(requestCode, resultCode, data);
 
-
         //Jeżeli zrobiono zdjęcie
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
 
@@ -136,15 +137,108 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
         photoStep.setAdapter();
     }
 
+
+
+
+
     private String makeEmailBody() {
 
-        return "Zgłaszający: " + nameStep.getUserName();  /* + "\n" +
-                "Dane kontaktowe zgłaszającego: " + phoneNumberStep.getPhoneNumber() + "\n" +
-                "Numer rejestracyjny: " + registrationNumberStep.getRegistrationNumber() + "\n" +
-                "Data usterki: " + selectDateStep.getDate() + "  " + (selectTimeStep.getTime().matches("") ? selectTimeStep.getTime() : "") + "\n" +
-                "Opis usterki: " + descriptionStep.getDescription() + "\n" +
-                "Miejsce zgłoszenia określone na podstawie GPS: " + (!localizationStep.getAddress().matches("") ? (localizationStep.getAddress() + "\n"+ "Długość geograficzna: " + localizationStep.getLongitude()+ "\n" +
-                "Szerokość geograficzna: " + localizationStep.getLatitude()) : "użytkownik nie udostępnił lokalizacji") ;  */
+        return "Zgłaszający: " + nameStep.getUserName()   + "\n" +
+                "Numer busa: " + busNumberStep.getBusNumber() + "\n" +
+                "Data wyjazdu: " + selectDateStep.getDate() + "\n" +
+                "Stan licznika start: " + counterStartStep.getCounter() + "\n" +
+                "Stan licznika stop: " + counterEndStep.getCounter() + "\n" +
+                "Dodatkowe uwagi: " + (descriptionStep.getDescription().matches("") ? "Brak" : descriptionStep.getDescription());
+
+    }
+
+
+
+
+    private void sendEmail(final String email_body) {
+
+
+        new Thread(new Runnable() {
+
+            @SuppressLint("RestrictedApi")
+            @Override
+            public void run() {
+                try {
+                    GMailSender sender = new GMailSender("motolifeflota@gmail.com", "motolifeapp1.0");
+                    //GMailSender sender = new GMailSender("oskail@wp.pl", "Aezakmi2!");
+
+                    sender.sendMail(getBaseContext().getString(R.string.Email_title) + busNumberStep.getBusNumber(),               //title - subject
+                            email_body,                                                    //body message
+                            "motolifeflota@gmail.com",                              //sender
+                            "oskail@wp.pl",                                      //recipent
+                            storageFilesPathsList);
+
+                    mDialog.dismiss();
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            Handler handler = new Handler();
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mDialog.dismiss();
+                                    Intent reloadActivity = new Intent(MainActivity.this, MainActivity.class);
+                                    startActivity(reloadActivity);
+                                    finish();
+                                }
+                            }, 1500);
+                            mDialog = new MaterialDialog.Builder(MainActivity.this)
+                                    .setTitle("Gratulacje!")
+                                    .setMessage("Zgłoszenie zostało wysłane")
+                                    .setCancelable(false)
+                                    .setAnimation(R.raw.check_mark_success_animation)
+                                    .build();
+                            mDialog.show();
+                        }
+                    });
+
+
+                } catch (Exception e) {
+                    Log.e("SendMail", e.getMessage(), e);
+
+                    mDialog.dismiss();
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            mDialog = new MaterialDialog.Builder(MainActivity.this)
+                                    .setTitle("Błąd!")
+                                    .setMessage("Wystąpił błąd podczas wysyłania, sprawdź połączenie z internetem i spróbuj ponownie")
+                                    .setCancelable(false)
+                                    .setAnimation(R.raw.unapproved_cross)
+                                    .setNegativeButton("Anuluj", new MaterialDialog.OnClickListener() {
+                                        @Override
+                                        public void onClick(com.shreyaspatil.MaterialDialog.interfaces.DialogInterface dialogInterface, int which) {
+                                            dialogInterface.dismiss();
+                                            Intent reloadActivity = new Intent(MainActivity.this, MainActivity.class);
+                                            startActivity(reloadActivity);
+                                            finish();
+                                        }
+                                    })
+                                    .setPositiveButton("Wróć", new MaterialDialog.OnClickListener() {
+                                        @Override
+                                        public void onClick(com.shreyaspatil.MaterialDialog.interfaces.DialogInterface dialogInterface, int which) {
+                                            dialogInterface.dismiss();
+                                            verticalStepperForm.cancelFormCompletionOrCancellationAttempt();
+                                        }
+                                    })
+                                    .build();
+                            mDialog.show();
+                        }
+                    });
+
+                }
+            }
+        }).start();
+
     }
 
 
@@ -183,7 +277,7 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
                 .build();
         mDialog.show();
 
-        //sendEmail(makeEmailBody());
+        sendEmail(makeEmailBody());
 
 
     }
