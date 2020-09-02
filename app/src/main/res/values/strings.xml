@@ -7,5 +7,8 @@
     <string name="sprawdzone">Sprawdzone</string>
     <string name="podaj_haslo">Aby korzystać z aplikacji podaj hasło dostępu:</string>
     <string name="haslo">Hasło</string>
+    <string name="nieobowiazkowy">* Ten punkt jest nieobowiązkowy</string>
+    <string name="uwagi">Dodatkowe uwagi</string>
+    <string name="zrob_zdjecia_busa">Przed wyjazdem zrób zdjęcia busa z zewnątrz</string>
 
 </resources>

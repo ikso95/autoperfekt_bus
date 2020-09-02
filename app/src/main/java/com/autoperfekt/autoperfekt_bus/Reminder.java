@@ -26,8 +26,8 @@ public class Reminder extends AppCompatActivity {
             @Override
             public void onSlideComplete(SlideView slideView) {
                 // vibrate the device
-                Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                vibrator.vibrate(100);
+                //Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                //vibrator.vibrate(100);
 
                 // go to a new activity
                 startActivity(new Intent(Reminder.this, MainActivity.class));

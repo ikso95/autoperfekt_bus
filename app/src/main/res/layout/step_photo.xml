@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/opcjonalnyTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        android:layout_marginLeft="5dp"
+        android:text="* Ten etap jest nieobowiązkowy"
+        />
+
+    <TextView
+        android:id="@+id/zdjecia_busa_instrukcja"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/zrob_zdjecia_busa"
+        android:textSize="15sp"
+        android:layout_below="@+id/opcjonalnyTextView"
+        />
+
+    <LinearLayout
+        android:id="@+id/layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/zdjecia_busa_instrukcja"
+        android:layout_marginTop="5dp"
+        >
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/take_photo_button"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/ic_action_camera" />
+
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/load_photo_button"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@+id/take_photo_button"
+            android:background="@drawable/ic_folder_open" />
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/image_gallery"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:layout_below="@+id/layout"
+        android:orientation="horizontal"
+        android:visibility="gone" />
+
+
+</RelativeLayout>
