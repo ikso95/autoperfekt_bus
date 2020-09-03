@@ -1,4 +1,4 @@
-package com.autoperfekt.autoperfekt_bus.Steps.PhotoStep;
+package com.autoperfekt.autoperfekt_bus.Steps.InvoicePhotoStep;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -23,7 +23,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.autoperfekt.autoperfekt_bus.R;
 import com.autoperfekt.autoperfekt_bus.Steps.BusNumberStep;
 
-
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -32,7 +31,7 @@ import java.util.List;
 
 import ernestoyaquello.com.verticalstepperform.Step;
 
-public class PhotoStep extends Step<String> {
+public class InvoicePhotoStep extends Step<String> {
 
 
     private AppCompatImageButton takePhotoButton;
@@ -41,7 +40,7 @@ public class PhotoStep extends Step<String> {
     private View view;
 
 
-    static final int REQUEST_IMAGE_CAPTURE = 1;
+    static final int REQUEST_INVOICE_IMAGE_CAPTURE = 5;
     static final int CAMERA_PERMISSION_CODE = 2;
     static final int REQUEST_GET_SINGLE_FILE = 3;
     static final int STORAGE_PERMISSION_CODE = 4;
@@ -62,7 +61,7 @@ public class PhotoStep extends Step<String> {
     //---------------------------------------
     public RecyclerView recyclerView;
 
-    private GalleryAdapter galleryAdapter;
+    private InvoiceGalleryAdapter invoiceGalleryAdapter;
 
     private List<String> storageFilesPathsList = new ArrayList<>();
 
@@ -71,7 +70,7 @@ public class PhotoStep extends Step<String> {
     }
     //-------------------------
 
-    public PhotoStep(String stepTitle, Activity activity, BusNumberStep busNumberStep) {
+    public InvoicePhotoStep(String stepTitle, Activity activity, BusNumberStep busNumberStep) {
         super(stepTitle);
         this.myParentActivity = activity;     //potrzebne zeby wywoływać intenty z poziomy mainActivity
         this.busNumberStep = busNumberStep;
@@ -84,12 +83,11 @@ public class PhotoStep extends Step<String> {
         // Here we generate the view that will be used by the library as the content of the step.
 
         inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        view = inflater.inflate(R.layout.step_photo, null);
+        view = inflater.inflate(R.layout.step_invoice_photo, null);
 
-        takePhotoButton = view.findViewById(R.id.take_photo_button);
-        loadPhotoButton = view.findViewById(R.id.load_photo_button);
+        takePhotoButton = view.findViewById(R.id.take_invoice_photo_button);
 
-        recyclerView = view.findViewById(R.id.image_gallery);
+        recyclerView = view.findViewById(R.id.invoice_image_gallery);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
@@ -116,7 +114,7 @@ public class PhotoStep extends Step<String> {
                         if (imageFile != null) {                                            //jezeli plik istnieje podajemy Uri-adres pod ktorym ma byc zapisany obraz, miejsce na dysku
                             imageUri = FileProvider.getUriForFile(getContext(), "com.autoperfekt.autoperfekt_bus.fileprovider", imageFile);
                             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);   //dodajemy obraz do intent  - przez to ze dodajemy uri mamy adres zdjecia, nie otrzymamy w extras thumbnail obrazu (miniaturki)
-                            myParentActivity.startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE);    //uruchamiamy intnet
+                            myParentActivity.startActivityForResult(cameraIntent, REQUEST_INVOICE_IMAGE_CAPTURE);    //uruchamiamy intnet
                         }
 
 
@@ -126,24 +124,6 @@ public class PhotoStep extends Step<String> {
             }
         });
 
-
-        loadPhotoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    //Permission not granted, request permission
-                    ActivityCompat.requestPermissions((Activity) getContext(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
-
-                } else {
-                    //Permission granted
-                    Intent intent = new Intent();
-                    intent.setType("image/* video/*");                  //to choose all files image/* or image/jpg or video/* or video/mp4
-                    intent.setAction(Intent.ACTION_GET_CONTENT);
-                    myParentActivity.startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_GET_SINGLE_FILE);
-                }
-
-            }
-        });
 
         return view;
 
@@ -165,8 +145,8 @@ public class PhotoStep extends Step<String> {
             recyclerView.setDrawingCacheEnabled(true);
             recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
 
-            galleryAdapter = new GalleryAdapter(storageFilesPathsList, getContext(),PhotoStep.this);
-            recyclerView.setAdapter(galleryAdapter);
+            invoiceGalleryAdapter = new InvoiceGalleryAdapter(storageFilesPathsList, getContext(), InvoicePhotoStep.this);
+            recyclerView.setAdapter(invoiceGalleryAdapter);
             Log.d("photosSize", String.valueOf(storageFilesPathsList.size()));
         }
 
@@ -182,7 +162,7 @@ public class PhotoStep extends Step<String> {
 
         registrationNumber = busNumberStep.getBusNumber();
 
-        imageName = registrationNumber + timeStamp + ".jpg";
+        imageName = registrationNumber + timeStamp + "_Invoice.jpg";
 
         File image = new File(storageDir, imageName);
 

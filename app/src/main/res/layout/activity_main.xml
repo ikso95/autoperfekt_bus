@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,27 +7,17 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <ScrollView
+
+    <ernestoyaquello.com.verticalstepperform.VerticalStepperFormView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/stepper_form"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="wrap_content"
+        app:form_cancel_button_background_color="@color/colorRedMotoLife"
+        app:form_circle_background_color="@color/colorLightGreen"
+        app:form_display_bottom_navigation="false"
+        app:form_next_button_background_color="@color/colorLightGreen"
+        app:form_next_button_pressed_background_color="@color/colorLightGreen" />
 
 
-        <ernestoyaquello.com.verticalstepperform.VerticalStepperFormView
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/stepper_form"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:form_circle_background_color="@color/colorLightGreen"
-            app:form_next_button_background_color="@color/colorLightGreen"
-            app:form_next_button_pressed_background_color="@color/colorLightGreen"
-            app:form_cancel_button_background_color="@color/colorRedMotoLife"
-            app:form_display_bottom_navigation="false"
-            />
-
-    </ScrollView>
-
-
-
-</RelativeLayout>
+</ScrollView>

@@ -26,6 +26,7 @@ public class GMailSender extends javax.mail.Authenticator {
     private Session session;
 
     private List<String> storageFilesPathsList;
+    private List<String> invoiceStorageFilesPathsList;
 
     static {
         Security.addProvider(new JSSEProvider());
@@ -71,9 +72,10 @@ public class GMailSender extends javax.mail.Authenticator {
         Transport.send(message);
     }
 
-    public synchronized void sendMail(String subject, String body, String sender, String recipients, List<String> storageFilesPathsList) throws Exception {
+    public synchronized void sendMail(String subject, String body, String sender, String recipients, List<String> storageFilesPathsList, List<String> invoiceStorageFilesPathsList) throws Exception {
 
         this.storageFilesPathsList=storageFilesPathsList;
+        this.invoiceStorageFilesPathsList=invoiceStorageFilesPathsList;
 
         MimeMessage message = new MimeMessage(session);                                     //ustawienia maila
         message.setSender(new InternetAddress(sender));
@@ -90,20 +92,41 @@ public class GMailSender extends javax.mail.Authenticator {
         multipart.addBodyPart(messageBodyPartBody);
 
 
-        for(int i=0; i<storageFilesPathsList.size();i++)       //dodawanie wczytanych plikow
+        for(int i=0; i< storageFilesPathsList.size();i++)       //dodawanie wczytanych plikow
         {
             BodyPart messageBodyPartAttachment = new MimeBodyPart();                                                //druga czesc - zalaczniki - zdjecie
             DataSource source = new FileDataSource(storageFilesPathsList.get(i));
             messageBodyPartAttachment.setDataHandler(new DataHandler(source));
 
-            if(storageFilesPathsList.get(i).contains(subject.substring(subject.lastIndexOf(":")+1)))    //jeżeli nazwa pliku zawiea już numer rejestracyjny
-            {
+            //if(storageFilesPathsList.get(i).contains(subject.substring(subject.lastIndexOf(":")+1)))    //jeżeli nazwa pliku zawiea już numer rejestracyjny
+            //{
                 messageBodyPartAttachment.setFileName( (storageFilesPathsList.get(i)).substring((storageFilesPathsList.get(i)).lastIndexOf("/")+1));
-            }
-            else
-            {
-                messageBodyPartAttachment.setFileName( (subject.substring(subject.lastIndexOf(":")+1)) + "_" + (storageFilesPathsList.get(i)).substring((storageFilesPathsList.get(i)).lastIndexOf("/")+1));         //zmiana nazwy zalacznika zeby nie przekazywac sciezki i dodanie nr rejesteacyjnego
-            }
+            //}
+            //else
+            //{
+            //    messageBodyPartAttachment.setFileName( (subject.substring(subject.lastIndexOf(":")+1)) + "_" + (storageFilesPathsList.get(i)).substring((storageFilesPathsList.get(i)).lastIndexOf("/")+1));         //zmiana nazwy zalacznika zeby nie przekazywac sciezki i dodanie nr rejesteacyjnego
+            //}
+
+            multipart.addBodyPart(messageBodyPartAttachment);
+        }
+
+
+        for(int i=0; i< invoiceStorageFilesPathsList.size();i++)       //dodawanie wczytanych plikow
+        {
+            BodyPart messageBodyPartAttachment = new MimeBodyPart();                                                //druga czesc - zalaczniki - zdjecie
+            DataSource source = new FileDataSource(invoiceStorageFilesPathsList.get(i));
+            messageBodyPartAttachment.setDataHandler(new DataHandler(source));
+
+            messageBodyPartAttachment.setFileName( (invoiceStorageFilesPathsList.get(i)).substring((invoiceStorageFilesPathsList.get(i)).lastIndexOf("/")+1));
+
+            //if(storageFilesPathsList.get(i).contains(subject.substring(subject.lastIndexOf(":")+1)))    //jeżeli nazwa pliku zawiea już numer rejestracyjny
+            //{
+            //    messageBodyPartAttachment.setFileName( (storageFilesPathsList.get(i)).substring((storageFilesPathsList.get(i)).lastIndexOf("/")+1));
+            //}
+            //else
+            //{
+            //    messageBodyPartAttachment.setFileName( (subject.substring(subject.lastIndexOf(":")+1)) + "_" + (storageFilesPathsList.get(i)).substring((storageFilesPathsList.get(i)).lastIndexOf("/")+1));         //zmiana nazwy zalacznika zeby nie przekazywac sciezki i dodanie nr rejesteacyjnego
+            //}
 
             multipart.addBodyPart(messageBodyPartAttachment);
         }

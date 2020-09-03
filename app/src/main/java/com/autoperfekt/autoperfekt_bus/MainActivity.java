@@ -1,10 +1,8 @@
 package com.autoperfekt.autoperfekt_bus;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,8 +15,9 @@ import com.autoperfekt.autoperfekt_bus.Steps.BusNumberStep;
 import com.autoperfekt.autoperfekt_bus.Steps.CounterEndStep;
 import com.autoperfekt.autoperfekt_bus.Steps.CounterStartStep;
 import com.autoperfekt.autoperfekt_bus.Steps.DescriptionStep;
+import com.autoperfekt.autoperfekt_bus.Steps.InvoicePhotoStep.InvoicePhotoStep;
 import com.autoperfekt.autoperfekt_bus.Steps.NameStep;
-import com.autoperfekt.autoperfekt_bus.Steps.PhotoStep.PhotoStep;
+import com.autoperfekt.autoperfekt_bus.Steps.BusPhotoStep.BusPhotoStep;
 import com.autoperfekt.autoperfekt_bus.Steps.SelectDateStep;
 import com.hbisoft.pickit.PickiT;
 import com.hbisoft.pickit.PickiTCallbacks;
@@ -31,15 +30,17 @@ import java.util.List;
 import ernestoyaquello.com.verticalstepperform.VerticalStepperFormView;
 import ernestoyaquello.com.verticalstepperform.listener.StepperFormListener;
 
-public class MainActivity extends AppCompatActivity implements PickiTCallbacks, StepperFormListener{
+public class MainActivity extends AppCompatActivity implements PickiTCallbacks, StepperFormListener {
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
+    static final int REQUEST_INVOICE_IMAGE_CAPTURE = 5;
     static final int REQUEST_GET_SINGLE_FILE = 3;
 
     private MaterialDialog mDialog;
 
     private boolean isAttachment = false;
     private List<String> storageFilesPathsList; //zdjecia bus
+    private List<String> invoiceStorageFilesPathsList;
     private boolean doubleBackToExitPressedOnce = false;
     private PickiT pickiT;
 
@@ -52,8 +53,8 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
     private CounterStartStep counterStartStep;
     private CounterEndStep counterEndStep;
     private DescriptionStep descriptionStep;
-    private PhotoStep photoStep;
-
+    private BusPhotoStep busPhotoStep;
+    private InvoicePhotoStep invoicePhotoStep;
 
 
     @Override
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
         setContentView(R.layout.activity_main);
 
         storageFilesPathsList = new ArrayList<>();
+        invoiceStorageFilesPathsList = new ArrayList<>();
         pickiT = new PickiT(this, this);
 
         nameStep = new NameStep("Imię i nazwisko");
@@ -70,12 +72,13 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
         counterStartStep = new CounterStartStep("Licznik - wyjazd");
         counterEndStep = new CounterEndStep("Licznik - powrót");
         descriptionStep = new DescriptionStep("Uwagi");
-        photoStep = new PhotoStep("Zdjęcia busa", MainActivity.this, busNumberStep);
+        busPhotoStep = new BusPhotoStep("Zdjęcia busa", MainActivity.this, busNumberStep);
+        invoicePhotoStep = new InvoicePhotoStep("Zdjęcia faktur", MainActivity.this, busNumberStep);
 
 
         verticalStepperForm = findViewById(R.id.stepper_form);
 
-        verticalStepperForm.setup(this, nameStep, busNumberStep,selectDateStep, counterStartStep, photoStep, counterEndStep, descriptionStep)
+        verticalStepperForm.setup(this, nameStep, busNumberStep, selectDateStep, counterStartStep, busPhotoStep, counterEndStep, invoicePhotoStep, descriptionStep)
                 .stepNextButtonText("Dalej")
                 .displayCancelButtonInLastStep(true)
                 .lastStepNextButtonText("Wyślij")
@@ -85,7 +88,6 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
 
 
     }
-
 
 
     @Override
@@ -117,9 +119,18 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
 
             isAttachment = true;
 
-            storageFilesPathsList.add("/storage/emulated/0/Android/data/com.autoperfekt.autoperfekt_bus/files/Pictures/" + photoStep.getImageName());
+            storageFilesPathsList.add("/storage/emulated/0/Android/data/com.autoperfekt.autoperfekt_bus/files/Pictures/" + busPhotoStep.getImageName());
 
             setNewGalleryAdapter();
+        }
+
+        if (requestCode == REQUEST_INVOICE_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+
+            isAttachment = true;
+
+            invoiceStorageFilesPathsList.add("/storage/emulated/0/Android/data/com.autoperfekt.autoperfekt_bus/files/Pictures/" + invoicePhotoStep.getImageName());
+
+            setNewInvoiceGalleryAdapter();
         }
 
 
@@ -133,17 +144,19 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
 
 
     private void setNewGalleryAdapter() {
-        photoStep.setStorageFilesPathsList(storageFilesPathsList);
-        photoStep.setAdapter();
+        busPhotoStep.setStorageFilesPathsList(storageFilesPathsList);
+        busPhotoStep.setAdapter();
     }
 
-
-
+    private void setNewInvoiceGalleryAdapter() {
+        invoicePhotoStep.setStorageFilesPathsList(invoiceStorageFilesPathsList);
+        invoicePhotoStep.setAdapter();
+    }
 
 
     private String makeEmailBody() {
 
-        return "Zgłaszający: " + nameStep.getUserName()   + "\n" +
+        return "Zgłaszający: " + nameStep.getUserName() + "\n" +
                 "Numer busa: " + busNumberStep.getBusNumber() + "\n" +
                 "Data wyjazdu: " + selectDateStep.getDate() + "\n" +
                 "Stan licznika start: " + counterStartStep.getCounter() + "\n" +
@@ -151,8 +164,6 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
                 "Dodatkowe uwagi: " + (descriptionStep.getDescription().matches("") ? "Brak" : descriptionStep.getDescription());
 
     }
-
-
 
 
     private void sendEmail(final String email_body) {
@@ -165,13 +176,14 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
             public void run() {
                 try {
                     GMailSender sender = new GMailSender("motolifeflota@gmail.com", "motolifeapp1.0");
-                    //GMailSender sender = new GMailSender("oskail@wp.pl", "Aezakmi2!");
+
 
                     sender.sendMail(getBaseContext().getString(R.string.Email_title) + busNumberStep.getBusNumber(),               //title - subject
                             email_body,                                                    //body message
                             "motolifeflota@gmail.com",                              //sender
                             "oskail@wp.pl",                                      //recipent
-                            storageFilesPathsList);
+                            storageFilesPathsList,
+                            invoiceStorageFilesPathsList);
 
                     mDialog.dismiss();
 
@@ -196,6 +208,7 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
                                     .setAnimation(R.raw.check_mark_success_animation)
                                     .build();
                             mDialog.show();
+                            clearDirectory();
                         }
                     });
 

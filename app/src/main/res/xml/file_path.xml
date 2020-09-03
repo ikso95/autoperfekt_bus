@@ -3,10 +3,8 @@
 
 
     <external-path
-        name="my_images"
+        name="bus_photos"
         path="Android/data/com.autoperfekt.autoperfekt_bus/files/Pictures"
         />
-
-
 
 </paths>

@@ -17,7 +17,7 @@ public class DescriptionStep extends Step<String> {
     private EditText descriptionEditText;
     private LayoutInflater inflater;
     private View view;
-    private String description;
+    private String description="";
 
 
     public DescriptionStep(String stepTitle) {

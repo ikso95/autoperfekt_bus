@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/opcjonalnyTextView"
+        android:id="@+id/opcjonalnyTextView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
@@ -14,7 +14,7 @@
         android:textSize="15sp" />
 
     <TextView
-        android:id="@+id/zdjecia_busa_instrukcja"
+        android:id="@+id/zdjecia_busa_instrukcja2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/opcjonalnyTextView"
@@ -23,7 +23,7 @@
 
 
     <androidx.appcompat.widget.AppCompatImageButton
-        android:id="@+id/take_photo_button"
+        android:id="@+id/take_invoice_photo_button"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_gravity="center"
@@ -31,7 +31,7 @@
 
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/image_gallery"
+        android:id="@+id/invoice_image_gallery"
         android:layout_width="match_parent"
         android:layout_height="350dp"
         android:layout_below="@+id/layout"

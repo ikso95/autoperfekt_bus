@@ -1,10 +1,9 @@
-package com.autoperfekt.autoperfekt_bus.Steps.PhotoStep;
+package com.autoperfekt.autoperfekt_bus.Steps.InvoicePhotoStep;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.media.ThumbnailUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,17 +19,17 @@ import com.autoperfekt.autoperfekt_bus.R;
 import java.io.File;
 import java.util.List;
 
-public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHolder> {
+public class InvoiceGalleryAdapter extends RecyclerView.Adapter<InvoiceGalleryAdapter.ViewHolder> {
 
     private List<String> storageFilesPathsList;
     private Context context;
-    private PhotoStep photoStep;
+    private InvoicePhotoStep invoicePhotoStep;
 
 
-    public GalleryAdapter(List<String> storageFilesPathsList, Context context, PhotoStep photoStep) {
+    public InvoiceGalleryAdapter(List<String> storageFilesPathsList, Context context, InvoicePhotoStep invoicePhotoStep) {
         this.storageFilesPathsList = storageFilesPathsList;
         this.context = context;
-        this.photoStep=photoStep;
+        this.invoicePhotoStep = invoicePhotoStep;
     }
 
 
@@ -76,7 +75,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
                 //jezeli nie ma na liscie zadnego pliku ukryj recyclerview
                 if(storageFilesPathsList.size()==0)
                 {
-                    photoStep.recyclerView.setVisibility(View.GONE);
+                    invoicePhotoStep.recyclerView.setVisibility(View.GONE);
                 }
             }
         });

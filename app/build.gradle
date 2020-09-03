@@ -33,7 +33,7 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
     implementation 'com.github.HBiSoft:PickiT:0.1.7'            //file picker
-    implementation 'com.ernestoyaquello.stepperform:vertical-stepper-form:2.2.1'    //vertical form
+    implementation 'com.ernestoyaquello.stepperform:vertical-stepper-form:2.3.0'    //vertical form
     implementation 'com.github.yatindeokar:MyLoadingButton:v1.0.1'          //loading button firstRun
     implementation 'com.airbnb.android:lottie:3.3.0'
     implementation 'com.shreyaspatil:MaterialDialog:2.0'  // Material Dialog Library
