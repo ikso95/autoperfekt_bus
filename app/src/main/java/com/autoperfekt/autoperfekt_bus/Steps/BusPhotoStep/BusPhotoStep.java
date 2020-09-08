@@ -71,15 +71,17 @@ public class BusPhotoStep extends Step<String> {
 
     private BusGalleryAdapter busGalleryAdapter;
 
+    private TinyDB tinydb;
 
 
-    private List<String> storageFilesPathsList = new ArrayList<>();
 
-    public void setStorageFilesPathsList(List<String> storageFilesPathsList) {
+    private ArrayList<String> storageFilesPathsList = new ArrayList<>();
+
+    public void setStorageFilesPathsList(ArrayList<String> storageFilesPathsList) {
         this.storageFilesPathsList = storageFilesPathsList;
     }
 
-    public List<String> getStorageFilesPathsList() {
+    public ArrayList<String> getStorageFilesPathsList() {
         return storageFilesPathsList;
     }
     //-------------------------
@@ -98,6 +100,8 @@ public class BusPhotoStep extends Step<String> {
 
         inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         view = inflater.inflate(R.layout.step_photo, null);
+
+        tinydb = new TinyDB(getContext());
 
         takePhotoButton = view.findViewById(R.id.take_photo_button);
 
@@ -197,9 +201,14 @@ public class BusPhotoStep extends Step<String> {
         // The step's data (i.e., the user name) will be considered valid only if it is longer than
         // three characters. In case it is not, we will display an error message for feedback.
         // In an optional step, you should implement this method to always return a valid value.
+        boolean isValid;
+        if(storageFilesPathsList.size()!=0)
+            isValid = true;
+        else
+            isValid = false;
+        Log.d("size13", String.valueOf(storageFilesPathsList.size()));
 
-        boolean isTimeValid = true;
-        return new IsDataValid(isTimeValid);
+        return new IsDataValid(true);
     }
 
     @Override
@@ -221,9 +230,16 @@ public class BusPhotoStep extends Step<String> {
     @Override
     protected void onStepOpened(boolean animated) {
         // This will be called automatically whenever the step gets opened.
-        setAdapter();
+
+        if(tinydb.getListString("BusPhotoPaths")!=null)
+        {
+            storageFilesPathsList = tinydb.getListString("BusPhotoPaths");
+        }
+
 
         hideKeyboardFrom(getContext(),view);
+        setAdapter();
+
     }
 
     public static void hideKeyboardFrom(Context context, View view) {
@@ -234,12 +250,8 @@ public class BusPhotoStep extends Step<String> {
     @Override
     protected void onStepClosed(boolean animated) {
         // This will be called automatically whenever the step gets closed.
-        TinyDB tinydb = new TinyDB(getContext());
-        //tinydb.putList("BusPhotoPaths", mUsersArray);
 
-
-
-
+        tinydb.putListString("BusPhotoPaths", storageFilesPathsList);
     }
 
     @Override

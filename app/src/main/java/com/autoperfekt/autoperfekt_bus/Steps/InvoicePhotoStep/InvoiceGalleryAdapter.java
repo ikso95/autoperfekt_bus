@@ -17,16 +17,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.autoperfekt.autoperfekt_bus.R;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class InvoiceGalleryAdapter extends RecyclerView.Adapter<InvoiceGalleryAdapter.ViewHolder> {
 
-    private List<String> storageFilesPathsList;
+    private ArrayList<String> storageFilesPathsList;
     private Context context;
     private InvoicePhotoStep invoicePhotoStep;
 
 
-    public InvoiceGalleryAdapter(List<String> storageFilesPathsList, Context context, InvoicePhotoStep invoicePhotoStep) {
+    public InvoiceGalleryAdapter(ArrayList<String> storageFilesPathsList, Context context, InvoicePhotoStep invoicePhotoStep) {
         this.storageFilesPathsList = storageFilesPathsList;
         this.context = context;
         this.invoicePhotoStep = invoicePhotoStep;

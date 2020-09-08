@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.autoperfekt.autoperfekt_bus.R;
 import com.autoperfekt.autoperfekt_bus.Steps.BusNumberStep;
+import com.autoperfekt.autoperfekt_bus.TinyDB;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -59,15 +60,20 @@ public class InvoicePhotoStep extends Step<String> {
 
     private BusNumberStep busNumberStep;
 
+    private TinyDB tinydb;
+
     //---------------------------------------
     public RecyclerView recyclerView;
 
     private InvoiceGalleryAdapter invoiceGalleryAdapter;
 
-    private List<String> storageFilesPathsList = new ArrayList<>();
+    private ArrayList<String> storageFilesPathsList = new ArrayList<>();
 
-    public void setStorageFilesPathsList(List<String> storageFilesPathsList) {
+    public void setStorageFilesPathsList(ArrayList<String> storageFilesPathsList) {
         this.storageFilesPathsList = storageFilesPathsList;
+    }
+    public ArrayList<String> getStorageFilesPathsList() {
+        return storageFilesPathsList;
     }
     //-------------------------
 
@@ -85,6 +91,8 @@ public class InvoicePhotoStep extends Step<String> {
 
         inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         view = inflater.inflate(R.layout.step_invoice_photo, null);
+
+        tinydb = new TinyDB(getContext());
 
         takePhotoButton = view.findViewById(R.id.take_invoice_photo_button);
 
@@ -206,9 +214,12 @@ public class InvoicePhotoStep extends Step<String> {
     @Override
     protected void onStepOpened(boolean animated) {
         // This will be called automatically whenever the step gets opened.
-        setAdapter();
+
+        if(tinydb.getListString("InvoicePhotoPaths")!=null)
+            storageFilesPathsList = tinydb.getListString("InvoicePhotoPaths");
 
         hideKeyboardFrom(getContext(),view);
+        setAdapter();
     }
 
     public static void hideKeyboardFrom(Context context, View view) {
@@ -219,6 +230,7 @@ public class InvoicePhotoStep extends Step<String> {
     @Override
     protected void onStepClosed(boolean animated) {
         // This will be called automatically whenever the step gets closed.
+        tinydb.putListString("InvoicePhotoPaths", storageFilesPathsList);
     }
 
     @Override

@@ -39,12 +39,13 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
     static final int REQUEST_GET_SINGLE_FILE = 3;
 
     private SharedPreferences sharedPreferences;
+    private TinyDB tinydb;
 
     private MaterialDialog mDialog;
 
     private boolean isAttachment = false;
-    private List<String> storageFilesPathsList; //zdjecia bus
-    private List<String> invoiceStorageFilesPathsList;
+    private ArrayList<String> storageFilesPathsList; //zdjecia bus
+    private ArrayList<String> invoiceStorageFilesPathsList;
     private boolean doubleBackToExitPressedOnce = false;
     private PickiT pickiT;
 
@@ -66,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
         storageFilesPathsList = new ArrayList<>();
         invoiceStorageFilesPathsList = new ArrayList<>();
         pickiT = new PickiT(this, this);
@@ -83,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
         verticalStepperForm = findViewById(R.id.stepper_form);
 
         verticalStepperForm.setup(this, nameStep, busNumberStep, selectDateStep, counterStartStep, busPhotoStep, counterEndStep, invoicePhotoStep, descriptionStep)
-                .stepNextButtonText("Dalej")
+                .stepNextButtonText("Zapisz")
                 .displayCancelButtonInLastStep(true)
                 .lastStepNextButtonText("Wyślij")
                 .confirmationStepTitle("Wyślij raport")
@@ -122,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
 
             isAttachment = true;
+            storageFilesPathsList=busPhotoStep.getStorageFilesPathsList();
 
             storageFilesPathsList.add("/storage/emulated/0/Android/data/com.autoperfekt.autoperfekt_bus/files/Pictures/" + busPhotoStep.getImageName());
 
@@ -131,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
         if (requestCode == REQUEST_INVOICE_IMAGE_CAPTURE && resultCode == RESULT_OK) {
 
             isAttachment = true;
-
+            invoiceStorageFilesPathsList=invoicePhotoStep.getStorageFilesPathsList();
             invoiceStorageFilesPathsList.add("/storage/emulated/0/Android/data/com.autoperfekt.autoperfekt_bus/files/Pictures/" + invoicePhotoStep.getImageName());
 
             setNewInvoiceGalleryAdapter();
@@ -319,6 +323,10 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
         editor.commit(); // commit changes
+
+        tinydb = new TinyDB(this);
+        tinydb.clear();
+
     }
 
     private void clearDirectory() {

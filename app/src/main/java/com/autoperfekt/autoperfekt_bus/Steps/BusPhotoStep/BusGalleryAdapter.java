@@ -17,16 +17,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.autoperfekt.autoperfekt_bus.R;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BusGalleryAdapter extends RecyclerView.Adapter<BusGalleryAdapter.ViewHolder> {
 
-    private List<String> storageFilesPathsList;
+    private ArrayList<String> storageFilesPathsList;
     private Context context;
     private BusPhotoStep busPhotoStep;
 
 
-    public BusGalleryAdapter(List<String> storageFilesPathsList, Context context, BusPhotoStep busPhotoStep) {
+    public BusGalleryAdapter(ArrayList<String> storageFilesPathsList, Context context, BusPhotoStep busPhotoStep) {
         this.storageFilesPathsList = storageFilesPathsList;
         this.context = context;
         this.busPhotoStep = busPhotoStep;

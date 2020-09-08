@@ -113,6 +113,7 @@ public class NameStep extends Step<String> {
         userNameEditText.requestFocusFromTouch();
 
         userNameEditText.setText(sharedPreferences.getString("Name",""));
+
     }
 
     @Override
