@@ -1,8 +1,10 @@
 package com.autoperfekt.autoperfekt_bus.Steps;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,6 +20,7 @@ public class NameStep extends Step<String> {
     private LayoutInflater inflater;
     private View view;
     private String userName;
+    private SharedPreferences sharedPreferences;
 
     public NameStep(String stepTitle) {
         super(stepTitle);
@@ -32,6 +35,8 @@ public class NameStep extends Step<String> {
         view = inflater.inflate(R.layout.step_name, null);
 
         userNameEditText = view.findViewById(R.id.name_EditText);
+
+        sharedPreferences = getContext().getSharedPreferences("AppData", Context.MODE_PRIVATE); // 0 - for private mode
 
         userNameEditText.addTextChangedListener(new TextWatcher() {
 
@@ -62,6 +67,7 @@ public class NameStep extends Step<String> {
     public String getUserName() {
         return userName;
     }
+
 
     @Override
     protected IsDataValid isStepDataValid(String stepData) {
@@ -105,12 +111,17 @@ public class NameStep extends Step<String> {
         userNameEditText.setFocusableInTouchMode(true);
         userNameEditText.requestFocus();
         userNameEditText.requestFocusFromTouch();
+
+        userNameEditText.setText(sharedPreferences.getString("Name",""));
     }
 
     @Override
     protected void onStepClosed(boolean animated) {
         // This will be called automatically whenever the step gets closed.
 
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("Name", getUserName());
+        editor.commit(); // commit changes
 
     }
 

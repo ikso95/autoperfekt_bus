@@ -1,6 +1,7 @@
 package com.autoperfekt.autoperfekt_bus.Steps;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ public class DescriptionStep extends Step<String> {
     private LayoutInflater inflater;
     private View view;
     private String description="";
+    private SharedPreferences sharedPreferences;
 
 
     public DescriptionStep(String stepTitle) {
@@ -36,6 +38,8 @@ public class DescriptionStep extends Step<String> {
 
         descriptionEditText = view.findViewById(R.id.description_EditText);
         descriptionEditText.setSingleLine(false);
+
+        sharedPreferences = getContext().getSharedPreferences("AppData", Context.MODE_PRIVATE); // 0 - for private mode
 
 
 
@@ -112,11 +116,16 @@ public class DescriptionStep extends Step<String> {
         descriptionEditText.setFocusableInTouchMode(true);
         descriptionEditText.requestFocus();
         descriptionEditText.requestFocusFromTouch();
+
+        descriptionEditText.setText(sharedPreferences.getString("Description",""));
     }
 
     @Override
     protected void onStepClosed(boolean animated) {
         // This will be called automatically whenever the step gets closed.
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("Description", getDescription());
+        editor.commit(); // commit changes
     }
 
     @Override

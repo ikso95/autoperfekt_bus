@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Environment;
@@ -12,6 +13,8 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.core.app.ActivityCompat;
@@ -20,8 +23,10 @@ import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.autoperfekt.autoperfekt_bus.MainActivity;
 import com.autoperfekt.autoperfekt_bus.R;
 import com.autoperfekt.autoperfekt_bus.Steps.BusNumberStep;
+import com.autoperfekt.autoperfekt_bus.TinyDB;
 
 
 import java.io.File;
@@ -39,6 +44,8 @@ public class BusPhotoStep extends Step<String> {
     private AppCompatImageButton loadPhotoButton;
     private LayoutInflater inflater;
     private View view;
+
+    private SharedPreferences sharedPreferences;
 
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -64,10 +71,16 @@ public class BusPhotoStep extends Step<String> {
 
     private BusGalleryAdapter busGalleryAdapter;
 
+
+
     private List<String> storageFilesPathsList = new ArrayList<>();
 
     public void setStorageFilesPathsList(List<String> storageFilesPathsList) {
         this.storageFilesPathsList = storageFilesPathsList;
+    }
+
+    public List<String> getStorageFilesPathsList() {
+        return storageFilesPathsList;
     }
     //-------------------------
 
@@ -91,6 +104,8 @@ public class BusPhotoStep extends Step<String> {
         recyclerView = view.findViewById(R.id.image_gallery);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+
+        sharedPreferences = getContext().getSharedPreferences("AppData", Context.MODE_PRIVATE); // 0 - for private mode
 
 
         takePhotoButton.setOnClickListener(new View.OnClickListener() {
@@ -207,11 +222,24 @@ public class BusPhotoStep extends Step<String> {
     protected void onStepOpened(boolean animated) {
         // This will be called automatically whenever the step gets opened.
         setAdapter();
+
+        hideKeyboardFrom(getContext(),view);
+    }
+
+    public static void hideKeyboardFrom(Context context, View view) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     @Override
     protected void onStepClosed(boolean animated) {
         // This will be called automatically whenever the step gets closed.
+        TinyDB tinydb = new TinyDB(getContext());
+        //tinydb.putList("BusPhotoPaths", mUsersArray);
+
+
+
+
     }
 
     @Override

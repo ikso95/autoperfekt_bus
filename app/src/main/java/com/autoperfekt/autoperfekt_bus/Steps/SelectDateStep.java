@@ -1,10 +1,13 @@
 package com.autoperfekt.autoperfekt_bus.Steps;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
@@ -25,6 +28,7 @@ public class SelectDateStep extends Step<String> {
     private LayoutInflater inflater;
     private View view;
     private String date;
+    private SharedPreferences sharedPreferences;
 
     public SelectDateStep(String stepTitle) {
         super(stepTitle);
@@ -42,6 +46,7 @@ public class SelectDateStep extends Step<String> {
         pickDateButton = view.findViewById(R.id.pick_date_button);
         dateTextView = view.findViewById(R.id.date_TextView);
 
+        sharedPreferences = getContext().getSharedPreferences("AppData", Context.MODE_PRIVATE); // 0 - for private mode
 
         pickDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,8 +70,6 @@ public class SelectDateStep extends Step<String> {
                     picker.setTitle("Data usterki");
                     picker.show();
                     dateTextView.setError(null);
-
-
             }
         });
 
@@ -106,15 +109,36 @@ public class SelectDateStep extends Step<String> {
         return !userName.isEmpty() ? userName : "(Empty)";
     }
 
+
     @Override
     protected void onStepOpened(boolean animated) {
         // This will be called automatically whenever the step gets opened.
+        hideKeyboardFrom(getContext(),view);
 
+        dateTextView.setText(sharedPreferences.getString("Date",""));
+        date = sharedPreferences.getString("Date","");
+
+
+        if(date!=""){
+            dateTextView.setVisibility(View.VISIBLE);
+            markAsCompletedOrUncompleted(true);
+        }
+
+
+    }
+
+    public static void hideKeyboardFrom(Context context, View view) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     @Override
     protected void onStepClosed(boolean animated) {
         // This will be called automatically whenever the step gets closed.
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("Date", getDate());
+        editor.commit(); // commit changes
     }
 
     @Override
@@ -132,4 +156,7 @@ public class SelectDateStep extends Step<String> {
         // To restore the step after a configuration change, we restore the text of its EditText view.
         dateTextView.setText(stepData);
     }
+
+
+
 }

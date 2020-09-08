@@ -1,6 +1,7 @@
 package com.autoperfekt.autoperfekt_bus.Steps;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ public class CounterStartStep extends Step<String> {
     private LayoutInflater inflater;
     private View view;
     private String counter;
+    private SharedPreferences sharedPreferences;
 
     public CounterStartStep(String stepTitle) {
         super(stepTitle);
@@ -34,6 +36,8 @@ public class CounterStartStep extends Step<String> {
 
 
         counterStartEditText = view.findViewById(R.id.counter_start_EditText);
+
+        sharedPreferences = getContext().getSharedPreferences("AppData", Context.MODE_PRIVATE); // 0 - for private mode
 
 
 
@@ -109,13 +113,18 @@ public class CounterStartStep extends Step<String> {
         counterStartEditText.setFocusableInTouchMode(true);
         counterStartEditText.requestFocus();
         counterStartEditText.requestFocusFromTouch();
+
+
+        counterStartEditText.setText(sharedPreferences.getString("CounterStart",""));
     }
 
     @Override
     protected void onStepClosed(boolean animated) {
         // This will be called automatically whenever the step gets closed.
 
-
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("CounterStart", getCounter());
+        editor.commit(); // commit changes
     }
 
     @Override

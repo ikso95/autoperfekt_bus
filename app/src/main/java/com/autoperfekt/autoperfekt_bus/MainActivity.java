@@ -3,7 +3,9 @@ package com.autoperfekt.autoperfekt_bus;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -35,6 +37,8 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int REQUEST_INVOICE_IMAGE_CAPTURE = 5;
     static final int REQUEST_GET_SINGLE_FILE = 3;
+
+    private SharedPreferences sharedPreferences;
 
     private MaterialDialog mDialog;
 
@@ -161,6 +165,7 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
                 "Data wyjazdu: " + selectDateStep.getDate() + "\n" +
                 "Stan licznika start: " + counterStartStep.getCounter() + "\n" +
                 "Stan licznika stop: " + counterEndStep.getCounter() + "\n" +
+                "Przejechane kilometry: " + String.valueOf(Integer.valueOf(counterEndStep.getCounter())-Integer.valueOf(counterStartStep.getCounter())) + " km" + "\n" +
                 "Dodatkowe uwagi: " + (descriptionStep.getDescription().matches("") ? "Brak" : descriptionStep.getDescription());
 
     }
@@ -209,6 +214,7 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
                                     .build();
                             mDialog.show();
                             clearDirectory();
+                            clearSharedPreferences();
                         }
                     });
 
@@ -293,14 +299,26 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
         sendEmail(makeEmailBody());
 
 
+
     }
 
     @Override
     public void onCancelledForm() {
         clearDirectory();
+        clearSharedPreferences();
+
         Intent reloadActivity = new Intent(MainActivity.this, MainActivity.class);
         startActivity(reloadActivity);
         finish();
+    }
+
+    public void clearSharedPreferences()
+    {
+        sharedPreferences = getSharedPreferences("AppData", Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.commit(); // commit changes
     }
 
     private void clearDirectory() {

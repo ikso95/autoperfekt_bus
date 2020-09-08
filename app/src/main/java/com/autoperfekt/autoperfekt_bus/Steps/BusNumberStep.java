@@ -1,6 +1,7 @@
 package com.autoperfekt.autoperfekt_bus.Steps;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ public class BusNumberStep extends Step<String> {
     private LayoutInflater inflater;
     private View view;
     private String busNumber;
+    private SharedPreferences sharedPreferences;
 
     public BusNumberStep(String stepTitle) {
         super(stepTitle);
@@ -35,7 +37,7 @@ public class BusNumberStep extends Step<String> {
 
         busNumberEditText = view.findViewById(R.id.bus_number_EditText);
 
-
+        sharedPreferences = getContext().getSharedPreferences("AppData", Context.MODE_PRIVATE); // 0 - for private mode
 
         busNumberEditText.addTextChangedListener(new TextWatcher() {
 
@@ -110,11 +112,18 @@ public class BusNumberStep extends Step<String> {
         busNumberEditText.requestFocus();
         busNumberEditText.requestFocusFromTouch();
 
+
+        busNumberEditText.setText(sharedPreferences.getString("BusNumber",""));
+
     }
 
     @Override
     protected void onStepClosed(boolean animated) {
         // This will be called automatically whenever the step gets closed.
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("BusNumber", getBusNumber());
+        editor.commit(); // commit changes
     }
 
     @Override
