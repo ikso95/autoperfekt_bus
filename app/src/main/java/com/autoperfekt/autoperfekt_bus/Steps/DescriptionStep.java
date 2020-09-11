@@ -130,6 +130,8 @@ public class DescriptionStep extends Step<String> {
     {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("Description", getDescription());
+        if(!getDescription().equals(""))
+            editor.putInt("StepNumber", 8);
         editor.commit(); // commit changes
     }
 

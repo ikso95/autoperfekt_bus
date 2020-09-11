@@ -18,7 +18,7 @@ public class CounterStartStep extends Step<String> {
     private EditText counterStartEditText;
     private LayoutInflater inflater;
     private View view;
-    private String counter;
+    private String counter="";
     private SharedPreferences sharedPreferences;
 
     public CounterStartStep(String stepTitle) {
@@ -129,6 +129,8 @@ public class CounterStartStep extends Step<String> {
     {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("CounterStart", getCounter());
+        if(!getCounter().equals(""))
+            editor.putInt("StepNumber", 4);
         editor.commit(); // commit changes
     }
 

@@ -42,6 +42,8 @@ public class InvoicePhotoStep extends Step<String> {
     private LayoutInflater inflater;
     private View view;
 
+    private SharedPreferences sharedPreferences;
+
 
     static final int REQUEST_INVOICE_IMAGE_CAPTURE = 5;
     static final int CAMERA_PERMISSION_CODE = 2;
@@ -92,6 +94,8 @@ public class InvoicePhotoStep extends Step<String> {
 
         inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         view = inflater.inflate(R.layout.step_invoice_photo, null);
+
+        sharedPreferences = getContext().getSharedPreferences("AppData", Context.MODE_PRIVATE); // 0 - for private mode
 
         tinydb = new TinyDB(getContext());
 
@@ -237,6 +241,10 @@ public class InvoicePhotoStep extends Step<String> {
     public void saveStepData()
     {
         tinydb.putListString("InvoicePhotoPaths", storageFilesPathsList);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        if(storageFilesPathsList.size()!=0)
+            editor.putInt("StepNumber", 7);
+        editor.commit(); // commit changes
     }
 
     @Override

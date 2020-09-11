@@ -27,7 +27,7 @@ public class SelectDateStep extends Step<String> {
     private AppCompatImageButton pickDateButton;
     private LayoutInflater inflater;
     private View view;
-    private String date;
+    private String date="";
     private SharedPreferences sharedPreferences;
 
     public SelectDateStep(String stepTitle) {
@@ -143,6 +143,8 @@ public class SelectDateStep extends Step<String> {
     {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("Date", getDate());
+        if(!getDate().equals(""))
+            editor.putInt("StepNumber", 3);
         editor.commit(); // commit changes
     }
 

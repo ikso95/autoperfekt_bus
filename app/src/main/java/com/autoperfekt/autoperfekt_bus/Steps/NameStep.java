@@ -19,7 +19,7 @@ public class NameStep extends Step<String> {
     private EditText userNameEditText;
     private LayoutInflater inflater;
     private View view;
-    private String userName;
+    private String userName="";
     private SharedPreferences sharedPreferences;
 
     public NameStep(String stepTitle) {
@@ -55,7 +55,7 @@ public class NameStep extends Step<String> {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                userName= userNameEditText.getText().toString().trim();
+                userName = userNameEditText.getText().toString().trim();
             }
         });
 
@@ -112,7 +112,7 @@ public class NameStep extends Step<String> {
         userNameEditText.requestFocus();
         userNameEditText.requestFocusFromTouch();
 
-        userNameEditText.setText(sharedPreferences.getString("Name",""));
+        userNameEditText.setText(sharedPreferences.getString("Name", ""));
 
     }
 
@@ -122,13 +122,15 @@ public class NameStep extends Step<String> {
 
     }
 
-    public void saveStepData()
-    {
+    public void saveStepData() {
+
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("Name", getUserName());
+        if(!getUserName().equals(""))
+            editor.putInt("StepNumber", 1);
         editor.commit(); // commit changes
-    }
 
+    }
 
 
     @Override

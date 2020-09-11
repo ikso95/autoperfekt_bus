@@ -18,7 +18,7 @@ public class BusNumberStep extends Step<String> {
     private EditText busNumberEditText;
     private LayoutInflater inflater;
     private View view;
-    private String busNumber;
+    private String busNumber="";
     private SharedPreferences sharedPreferences;
 
     public BusNumberStep(String stepTitle) {
@@ -127,6 +127,8 @@ public class BusNumberStep extends Step<String> {
     {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("BusNumber", getBusNumber());
+        if(!getBusNumber().equals(""))
+            editor.putInt("StepNumber", 2);
         editor.commit(); // commit changes
     }
 

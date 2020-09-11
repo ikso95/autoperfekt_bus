@@ -1,7 +1,5 @@
 package com.autoperfekt.autoperfekt_bus;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -12,22 +10,25 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.autoperfekt.autoperfekt_bus.Email.GMailSender;
 import com.autoperfekt.autoperfekt_bus.Steps.BusNumberStep;
+import com.autoperfekt.autoperfekt_bus.Steps.BusPhotoStep.BusPhotoStep;
 import com.autoperfekt.autoperfekt_bus.Steps.CounterEndStep;
 import com.autoperfekt.autoperfekt_bus.Steps.CounterStartStep;
 import com.autoperfekt.autoperfekt_bus.Steps.DescriptionStep;
 import com.autoperfekt.autoperfekt_bus.Steps.InvoicePhotoStep.InvoicePhotoStep;
 import com.autoperfekt.autoperfekt_bus.Steps.NameStep;
-import com.autoperfekt.autoperfekt_bus.Steps.BusPhotoStep.BusPhotoStep;
 import com.autoperfekt.autoperfekt_bus.Steps.SelectDateStep;
 import com.hbisoft.pickit.PickiT;
 import com.hbisoft.pickit.PickiTCallbacks;
+import com.shreyaspatil.MaterialDialog.AbstractDialog;
 import com.shreyaspatil.MaterialDialog.MaterialDialog;
+import com.shreyaspatil.MaterialDialog.interfaces.DialogInterface;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 import ernestoyaquello.com.verticalstepperform.VerticalStepperFormView;
 import ernestoyaquello.com.verticalstepperform.listener.StepperFormListener;
@@ -62,12 +63,19 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
     private InvoicePhotoStep invoicePhotoStep;
 
 
+    private boolean firstOnResume=true;
+    private boolean emailSent=false;
+    private boolean canceledForm=false;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        sharedPreferences = getSharedPreferences("AppData", Context.MODE_PRIVATE); // 0 - for private mode
 
+        //clearSharedPreferences();
 
         storageFilesPathsList = new ArrayList<>();
         invoiceStorageFilesPathsList = new ArrayList<>();
@@ -98,19 +106,41 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
 
     @Override
     protected void onStop() {
+        Log.d("oskar", "onStop: ");
         super.onStop();
-        nameStep.saveStepData();
-        busNumberStep.saveStepData();
-        selectDateStep.saveStepData();
-        counterStartStep.saveStepData();
-        busPhotoStep.saveStepData();
-        counterEndStep.saveStepData();
-        invoicePhotoStep.saveStepData();
-        descriptionStep.saveStepData();
+
+        if(emailSent || canceledForm)
+            clearSharedPreferences();
+        else
+        {
+            nameStep.saveStepData();
+            busNumberStep.saveStepData();
+            selectDateStep.saveStepData();
+            counterStartStep.saveStepData();
+            busPhotoStep.saveStepData();
+            counterEndStep.saveStepData();
+            invoicePhotoStep.saveStepData();
+            descriptionStep.saveStepData();
+        }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
 
+        int j = sharedPreferences.getInt("StepNumber",0);
+        Log.d("oskar", "onResume: j=" + j);
+        if(firstOnResume)
+        {
+            for (int i = 1; i < j; i++) {
 
+                verticalStepperForm.goToNextStep(false);
+                Log.d("oskar", "onResume: i=" + i);
+            }
+        }
+        Log.d("oskar", "onResume: " + firstOnResume);
+        firstOnResume=false;
+    }
 
     @Override
     public void onBackPressed() {
@@ -136,21 +166,23 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
 
         super.onActivityResult(requestCode, resultCode, data);
 
+        Log.d("resume", "onActivityResult: ");
         //Jeżeli zrobiono zdjęcie
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
 
             isAttachment = true;
-            storageFilesPathsList=busPhotoStep.getStorageFilesPathsList();
+            storageFilesPathsList = busPhotoStep.getStorageFilesPathsList();
 
             storageFilesPathsList.add("/storage/emulated/0/Android/data/com.autoperfekt.autoperfekt_bus/files/Pictures/" + busPhotoStep.getImageName());
 
             setNewGalleryAdapter();
+
         }
 
         if (requestCode == REQUEST_INVOICE_IMAGE_CAPTURE && resultCode == RESULT_OK) {
 
             isAttachment = true;
-            invoiceStorageFilesPathsList=invoicePhotoStep.getStorageFilesPathsList();
+            invoiceStorageFilesPathsList = invoicePhotoStep.getStorageFilesPathsList();
             invoiceStorageFilesPathsList.add("/storage/emulated/0/Android/data/com.autoperfekt.autoperfekt_bus/files/Pictures/" + invoicePhotoStep.getImageName());
 
             setNewInvoiceGalleryAdapter();
@@ -159,9 +191,7 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
 
         //Jeżeli wybrano plik z pamięci telefonu
         if (requestCode == REQUEST_GET_SINGLE_FILE && resultCode == RESULT_OK) {
-            if (resultCode == RESULT_OK) {
-                pickiT.getPath(data.getData(), Build.VERSION.SDK_INT);
-            }
+            pickiT.getPath(data.getData(), Build.VERSION.SDK_INT);
         }
     }
 
@@ -184,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
                 "Data wyjazdu: " + selectDateStep.getDate() + "\n" +
                 "Stan licznika start: " + counterStartStep.getCounter() + "\n" +
                 "Stan licznika stop: " + counterEndStep.getCounter() + "\n" +
-                "Przejechane kilometry: " + String.valueOf(Integer.valueOf(counterEndStep.getCounter())-Integer.valueOf(counterStartStep.getCounter())) + " km" + "\n" +
+                "Przejechane kilometry: " + String.valueOf(Integer.valueOf(counterEndStep.getCounter()) - Integer.valueOf(counterStartStep.getCounter())) + " km" + "\n" +
                 "Dodatkowe uwagi: " + (descriptionStep.getDescription().matches("") ? "Brak" : descriptionStep.getDescription());
 
     }
@@ -222,6 +252,7 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
                                     mDialog.dismiss();
                                     Intent reloadActivity = new Intent(MainActivity.this, MainActivity.class);
                                     startActivity(reloadActivity);
+
                                     finish();
                                 }
                             }, 1500);
@@ -233,7 +264,9 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
                                     .build();
                             mDialog.show();
                             clearDirectory();
-                            clearSharedPreferences();
+                            emailSent=true;
+                            //clearSharedPreferences();
+                            Log.d("oskar", "run: usunieto sharedpreferences");
                         }
                     });
 
@@ -254,7 +287,7 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
                                     .setAnimation(R.raw.unapproved_cross)
                                     .setNegativeButton("Anuluj", new MaterialDialog.OnClickListener() {
                                         @Override
-                                        public void onClick(com.shreyaspatil.MaterialDialog.interfaces.DialogInterface dialogInterface, int which) {
+                                        public void onClick(DialogInterface dialogInterface, int which) {
                                             dialogInterface.dismiss();
                                             Intent reloadActivity = new Intent(MainActivity.this, MainActivity.class);
                                             startActivity(reloadActivity);
@@ -263,7 +296,7 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
                                     })
                                     .setPositiveButton("Wróć", new MaterialDialog.OnClickListener() {
                                         @Override
-                                        public void onClick(com.shreyaspatil.MaterialDialog.interfaces.DialogInterface dialogInterface, int which) {
+                                        public void onClick(DialogInterface dialogInterface, int which) {
                                             dialogInterface.dismiss();
                                             verticalStepperForm.cancelFormCompletionOrCancellationAttempt();
                                         }
@@ -317,12 +350,15 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
 
         sendEmail(makeEmailBody());
 
+        clearSharedPreferences();
 
 
     }
 
     @Override
     public void onCancelledForm() {
+        canceledForm=true;
+
         clearDirectory();
         clearSharedPreferences();
 
@@ -331,13 +367,11 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
         finish();
     }
 
-    public void clearSharedPreferences()
-    {
-        sharedPreferences = getSharedPreferences("AppData", Context.MODE_PRIVATE);
+    public void clearSharedPreferences() {
+        //sharedPreferences = getSharedPreferences("AppData", Context.MODE_PRIVATE);
 
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear();
-        editor.commit(); // commit changes
+        SharedPreferences.Editor editor = this.sharedPreferences.edit();
+        editor.clear().commit();
 
         tinydb = new TinyDB(this);
         tinydb.clear();

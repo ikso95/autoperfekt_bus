@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,7 +19,7 @@ public class CounterEndStep extends Step<String> {
     private EditText counterEndEditText;
     private LayoutInflater inflater;
     private View view;
-    private String counter;
+    private String counter="";
     private SharedPreferences sharedPreferences;
 
     public CounterEndStep(String stepTitle) {
@@ -129,6 +130,8 @@ public class CounterEndStep extends Step<String> {
     {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("CounterStop", getCounter());
+        if(!getCounter().equals(""))
+            editor.putInt("StepNumber", 6);
         editor.commit(); // commit changes
     }
 

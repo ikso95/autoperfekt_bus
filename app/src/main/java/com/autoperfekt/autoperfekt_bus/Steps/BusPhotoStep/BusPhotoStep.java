@@ -257,6 +257,10 @@ public class BusPhotoStep extends Step<String> {
     public void saveStepData()
     {
         tinydb.putListString("BusPhotoPaths", storageFilesPathsList);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        if(storageFilesPathsList.size()!=0)
+            editor.putInt("StepNumber", 5);
+        editor.commit(); // commit changes
     }
 
     @Override
