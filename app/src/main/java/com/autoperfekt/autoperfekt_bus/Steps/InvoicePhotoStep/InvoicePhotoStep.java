@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Environment;
@@ -230,6 +231,11 @@ public class InvoicePhotoStep extends Step<String> {
     @Override
     protected void onStepClosed(boolean animated) {
         // This will be called automatically whenever the step gets closed.
+
+    }
+
+    public void saveStepData()
+    {
         tinydb.putListString("InvoicePhotoPaths", storageFilesPathsList);
     }
 

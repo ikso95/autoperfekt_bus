@@ -122,6 +122,11 @@ public class CounterStartStep extends Step<String> {
     protected void onStepClosed(boolean animated) {
         // This will be called automatically whenever the step gets closed.
 
+    }
+
+
+    public void saveStepData()
+    {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("CounterStart", getCounter());
         editor.commit(); // commit changes

@@ -136,6 +136,11 @@ public class SelectDateStep extends Step<String> {
     protected void onStepClosed(boolean animated) {
         // This will be called automatically whenever the step gets closed.
 
+
+    }
+
+    public void saveStepData()
+    {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("Date", getDate());
         editor.commit(); // commit changes

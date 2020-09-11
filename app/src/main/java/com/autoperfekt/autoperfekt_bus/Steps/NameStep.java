@@ -120,11 +120,16 @@ public class NameStep extends Step<String> {
     protected void onStepClosed(boolean animated) {
         // This will be called automatically whenever the step gets closed.
 
+    }
+
+    public void saveStepData()
+    {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("Name", getUserName());
         editor.commit(); // commit changes
-
     }
+
+
 
     @Override
     protected void onStepMarkedAsCompleted(boolean animated) {

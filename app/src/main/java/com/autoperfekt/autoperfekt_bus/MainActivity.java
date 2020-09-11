@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
         verticalStepperForm = findViewById(R.id.stepper_form);
 
         verticalStepperForm.setup(this, nameStep, busNumberStep, selectDateStep, counterStartStep, busPhotoStep, counterEndStep, invoicePhotoStep, descriptionStep)
-                .stepNextButtonText("Zapisz")
+                .stepNextButtonText("Dalej")
                 .displayCancelButtonInLastStep(true)
                 .lastStepNextButtonText("Wyślij")
                 .confirmationStepTitle("Wyślij raport")
@@ -95,6 +95,21 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
 
 
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        nameStep.saveStepData();
+        busNumberStep.saveStepData();
+        selectDateStep.saveStepData();
+        counterStartStep.saveStepData();
+        busPhotoStep.saveStepData();
+        counterEndStep.saveStepData();
+        invoicePhotoStep.saveStepData();
+        descriptionStep.saveStepData();
+    }
+
+
 
 
     @Override

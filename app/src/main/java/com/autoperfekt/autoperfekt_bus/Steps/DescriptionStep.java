@@ -123,6 +123,11 @@ public class DescriptionStep extends Step<String> {
     @Override
     protected void onStepClosed(boolean animated) {
         // This will be called automatically whenever the step gets closed.
+
+    }
+
+    public void saveStepData()
+    {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("Description", getDescription());
         editor.commit(); // commit changes

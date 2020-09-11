@@ -251,6 +251,11 @@ public class BusPhotoStep extends Step<String> {
     protected void onStepClosed(boolean animated) {
         // This will be called automatically whenever the step gets closed.
 
+
+    }
+
+    public void saveStepData()
+    {
         tinydb.putListString("BusPhotoPaths", storageFilesPathsList);
     }
 
