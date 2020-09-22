@@ -19,8 +19,8 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
 public class GMailSender extends javax.mail.Authenticator {
-    private String mailhost = "smtp.gmail.com";
-    //private String mailhost = "smtp.wp.pl";
+    //private String mailhost = "smtp.gmail.com";
+    private String mailhost = "smtp.poczta.onet.pl";
     private String user;
     private String password;
     private Session session;
@@ -41,6 +41,7 @@ public class GMailSender extends javax.mail.Authenticator {
         props.setProperty("mail.host", mailhost);
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.port", "465");
+        //props.put("mail.smtp.from", "oskail@wp.pl");
         props.put("mail.smtp.socketFactory.port", "465");
         props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         props.put("mail.smtp.socketFactory.fallback", "false");

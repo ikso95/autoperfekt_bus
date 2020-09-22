@@ -214,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
                 "Data wyjazdu: " + selectDateStep.getDate() + "\n" +
                 "Stan licznika start: " + counterStartStep.getCounter() + "\n" +
                 "Stan licznika stop: " + counterEndStep.getCounter() + "\n" +
-                "Przejechane kilometry: " + String.valueOf(Integer.valueOf(counterEndStep.getCounter()) - Integer.valueOf(counterStartStep.getCounter())) + " km" + "\n" +
+                "Przejechane kilometry: " + (Integer.valueOf(counterEndStep.getCounter()) - Integer.valueOf(counterStartStep.getCounter())) + " km" + "\n" +
                 "Dodatkowe uwagi: " + (descriptionStep.getDescription().matches("") ? "Brak" : descriptionStep.getDescription());
 
     }
@@ -229,13 +229,14 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
             @Override
             public void run() {
                 try {
-                    GMailSender sender = new GMailSender("motolifeflota@gmail.com", "motolifeapp1.0");
 
+                    //GMailSender sender = new GMailSender("motolifeflota@gmail.com", "motolifeapp1.0");
+                    GMailSender sender = new GMailSender("foxcode@onet.pl", "FoxCode95!");
 
-                    sender.sendMail(getBaseContext().getString(R.string.Email_title) + busNumberStep.getBusNumber(),               //title - subject
+                    sender.sendMail(getBaseContext().getString(R.string.Email_title) + busNumberStep.getBusNumber() + " (" + nameStep.getUserName()+")",               //title - subject
                             email_body,                                                    //body message
-                            "motolifeflota@gmail.com",                              //sender
-                            "oskail@wp.pl",                                      //recipent
+                            "foxcode@onet.pl",//"motolifeflota@gmail.com",                              //sender
+                            "busy.rozliczenie@gmail.com",                        //recipent
                             storageFilesPathsList,
                             invoiceStorageFilesPathsList);
 
@@ -371,7 +372,7 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
         //sharedPreferences = getSharedPreferences("AppData", Context.MODE_PRIVATE);
 
         SharedPreferences.Editor editor = this.sharedPreferences.edit();
-        editor.clear().commit();
+        editor.clear().apply();
 
         tinydb = new TinyDB(this);
         tinydb.clear();

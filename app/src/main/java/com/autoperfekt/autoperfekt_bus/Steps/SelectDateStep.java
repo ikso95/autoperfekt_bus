@@ -67,7 +67,7 @@ public class SelectDateStep extends Step<String> {
                                     markAsCompletedOrUncompleted(true);
                                 }
                             }, year, month, day);
-                    picker.setTitle("Data usterki");
+                    picker.setTitle("Data wyjazdu");
                     picker.show();
                     dateTextView.setError(null);
             }

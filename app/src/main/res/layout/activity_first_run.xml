@@ -24,7 +24,8 @@ tools:context=".FirstRunActivity">
     android:layout_height="wrap_content"
     android:layout_centerVertical="true"
     android:hint="@string/haslo"
-    app:passwordToggleEnabled="true">
+    app:passwordToggleEnabled="true"
+    app:boxBackgroundColor="@android:color/transparent" >
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/app_password_EditText"
@@ -44,6 +45,7 @@ tools:context=".FirstRunActivity">
     android:layout_height="wrap_content"
     android:layout_below="@+id/app_password"
     android:layout_centerHorizontal="true"
+    android:layout_marginTop="15dp"
 
     app:mlb_animationDuration="300"
     app:mlb_backgroundColor="@color/view_color_gray"

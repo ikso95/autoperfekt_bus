@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">autoperfekt_bus</string>
+    <string name="app_name">Auto Perfekt 24</string>
     <string name="dialog_message">Przed jazdą zawsze pamiętaj o sprawdzeniu oleju oraz płynów!</string>
     <string name="dialog_title">Uwaga!</string>
     <string name="ok">OK</string>
@@ -10,6 +10,7 @@
     <string name="nieobowiazkowy">* Ten punkt jest nieobowiązkowy</string>
     <string name="uwagi">Dodatkowe uwagi</string>
     <string name="zrob_zdjecia_busa">Przed wyjazdem zrób zdjęcia busa z zewnątrz</string>
-    <string name="Email_title">"Nowy raport z aplikacji dla busa: "</string>
+    <string name="Email_title">"Nowy raport dla busa: "</string>
+    <string name="zrob_zdjecia_faktur">Zrób zdjęcia paragonów</string>
 
 </resources>

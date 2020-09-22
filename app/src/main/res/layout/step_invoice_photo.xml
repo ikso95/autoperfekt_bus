@@ -5,20 +5,12 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/opcjonalnyTextView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:text="* Ten etap jest nieobowiązkowy"
-        android:textSize="15sp" />
-
-    <TextView
+        <TextView
         android:id="@+id/zdjecia_busa_instrukcja2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/opcjonalnyTextView"
-        android:text="@string/zrob_zdjecia_busa"
+        android:text="@string/zrob_zdjecia_faktur"
         android:textSize="15sp" />
 
 

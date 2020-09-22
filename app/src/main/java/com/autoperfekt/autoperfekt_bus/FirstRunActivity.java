@@ -16,7 +16,7 @@ public class FirstRunActivity extends AppCompatActivity {
     private EditText password;
     private MyLoadingButton myLoadingButton;
     private SharedPreferences sharedPreferences;
-    private final static String appPassword="haslo";
+    private final static String appPassword="busraport";
 
 
     @Override
