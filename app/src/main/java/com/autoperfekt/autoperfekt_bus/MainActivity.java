@@ -105,14 +105,13 @@ public class MainActivity extends AppCompatActivity implements PickiTCallbacks, 
     }
 
     @Override
-    protected void onStop() {
+    protected void onPause() {
+        super.onPause();
         Log.d("oskar", "onStop: ");
-        super.onStop();
 
-        if(emailSent || canceledForm)
+        if (emailSent || canceledForm)
             clearSharedPreferences();
-        else
-        {
+        else {
             nameStep.saveStepData();
             busNumberStep.saveStepData();
             selectDateStep.saveStepData();
